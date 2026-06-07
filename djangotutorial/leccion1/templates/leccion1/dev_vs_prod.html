@@ -1,0 +1,90 @@
+{% extends 'leccion1/base.html' %}
+
+{% block content %}
+<div class="glass-card animated-item" style="animation-delay: 0.1s;">
+    <h2>⚙️ Entorno de Desarrollo v/s Producción</h2>
+    <p>
+        Uno de los mayores errores al desplegar aplicaciones empresariales es utilizar la misma configuración en desarrollo y en producción. Django está diseñado con la seguridad como máxima prioridad, por lo que proporciona variables específicas en `settings.py` para controlar el comportamiento del framework según el entorno en el que se ejecuta.
+    </p>
+</div>
+
+<div class="glass-card animated-item" style="animation-delay: 0.2s;">
+    <h2>📊 Matriz de Configuración: Desarrollo v/s Producción</h2>
+    <p>Compara cómo cambian los principales parámetros en el archivo <code>settings.py</code> al preparar un despliegue corporativo:</p>
+    
+    <div style="overflow-x: auto; margin-top: 1.5rem;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+            <thead>
+                <tr style="border-bottom: 2px solid var(--border-color); color: var(--text-primary);">
+                    <th style="padding: 1rem 0.5rem; font-weight: bold; width: 20%;">Variable / Característica</th>
+                    <th style="padding: 1rem 0.5rem; font-weight: bold; width: 40%; color: var(--primary-color);">💻 Entorno de Desarrollo (Local)</th>
+                    <th style="padding: 1rem 0.5rem; font-weight: bold; width: 40%; color: var(--success);">🚀 Entorno de Producción (Servidor)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem 0.5rem; font-weight: 500;"><code>DEBUG</code></td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        <span class="badge-danger">True</span> <br>
+                        Muestra páginas detalladas con trazas de error (Stack Trace) que revelan código fuente, bases de datos y variables de entorno.
+                    </td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        <span class="badge-success">False</span> <br>
+                        Desactiva las páginas de error interactivas. Muestra una página genérica 500/404. Esencial para no filtrar datos sensibles a atacantes.
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem 0.5rem; font-weight: 500;"><code>ALLOWED_HOSTS</code></td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        <code>[]</code> o <code>['*']</code> <br>
+                        Permite cualquier Host Header para facilitar el acceso en localhost (127.0.0.1).
+                    </td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        <code>['www.miempresa.com', 'api.miempresa.com']</code> <br>
+                        Filtra estrictamente qué dominios pueden enviar peticiones. Previene ataques de envenenamiento de Host HTTP (Host Header Injection).
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem 0.5rem; font-weight: 500;"><code>SECRET_KEY</code></td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        Clave insegura por defecto o escrita en texto duro en <code>settings.py</code>.
+                    </td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        Cargada desde variables de entorno de forma segura: <br>
+                        <code>os.environ.get('DJANGO_SECRET_KEY')</code> <br>
+                        Nunca debe subirse a repositorios públicos como GitHub.
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem 0.5rem; font-weight: 500;"><code>DATABASES</code></td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        <strong>SQLite3</strong> <br>
+                        Fácil de configurar. Almacenada en un solo archivo local (<code>db.sqlite3</code>). Ideal para un programador trabajando en solitario.
+                    </td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        <strong>PostgreSQL, MySQL o MariaDB</strong> <br>
+                        Servidor de base de datos independiente con alta concurrencia, transacciones rápidas y sistemas de réplica/respaldo continuos.
+                    </td>
+                </tr>
+                <tr style="border-bottom: 1px solid var(--border-color);">
+                    <td style="padding: 1rem 0.5rem; font-weight: 500;">Archivos Estáticos</td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        Servidos automáticamente en tiempo real por el servidor de desarrollo <code>runserver</code>. Lento pero conveniente.
+                    </td>
+                    <td style="padding: 1rem 0.5rem; color: var(--text-secondary);">
+                        Servidos por un servidor web dedicado (Nginx, Apache) o CDN (CloudFront, Cloudflare). Se recopilan ejecutando el comando: <br>
+                        <code>python manage.py collectstatic</code>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="glass-card animated-item" style="animation-delay: 0.3s; border-color: rgba(245, 158, 11, 0.3); background: rgba(245, 158, 11, 0.02);">
+    <h2 style="color: var(--warning);">⚠️ Nota Crítica de Seguridad</h2>
+    <p style="margin-bottom: 0;">
+        Nunca expongas un servidor en producción con la variable <code>DEBUG = True</code>. Hacerlo permite a cualquier persona ajena a la organización visualizar el funcionamiento interno de tu base de datos, configuraciones, credenciales de correo electrónico, integraciones API y rutas del sistema al forzar una simple excepción de servidor.
+    </p>
+</div>
+{% endblock %}

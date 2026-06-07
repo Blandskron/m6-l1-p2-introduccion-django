@@ -1,0 +1,216 @@
+{% extends 'leccion1/base.html' %}
+
+{% block content %}
+<div class="glass-card animated-item" style="animation-delay: 0.1s;">
+    <h2>⚖️ Python Puro v/s Django Integrado</h2>
+    <p>
+        Para entender el valor real de Django, es útil compararlo con lo que tendríamos que hacer si programáramos un sitio web utilizando únicamente la librería estándar de Python (con sockets). Django abstrae la complejidad de bajo nivel del protocolo HTTP, automatizando tareas repetitivas y permitiéndonos escribir código limpio e intuitivo.
+    </p>
+</div>
+
+<div class="grid-2">
+    <!-- Code Comparison Card -->
+    <div class="glass-card animated-item" style="animation-delay: 0.2s; grid-column: span 2;">
+        <h2>🔍 Comparador de Código Side-by-Side</h2>
+        <p>Compara cómo se implementa un servidor básico que responde "Hola Mundo" en una ruta específica:</p>
+        
+        <div class="tabs-container">
+            <div class="tabs-header">
+                <button class="tab-btn active" id="tab-btn-python" onclick="switchTab('python')">🐍 Servidor en Python Puro (Sockets)</button>
+                <button class="tab-btn" id="tab-btn-django" onclick="switchTab('django')"> Django Integrado (Vista y Urls)</button>
+            </div>
+            
+            <div class="tab-pane active" id="pane-python">
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">En Python puro, debes crear un Socket TCP, escuchar en un puerto, manejar hilos (threads) para conexiones simultáneas, parsear las cabeceras HTTP de forma manual y retornar la cabecera correcta concatenada con HTML:</p>
+                <pre><code><span class="keyword">import</span> socket
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((<span class="string">'127.0.0.1'</span>, <span class="builtin">8000</span>))
+server.listen(<span class="builtin">5</span>)
+<span class="comment"># Bucle infinito para escuchar conexiones</span>
+<span class="keyword">while True</span>:
+    conn, addr = server.accept()
+    request = conn.recv(<span class="builtin">1024</span>).decode(<span class="string">'utf-8'</span>)
+    
+    <span class="comment"># Parsear cabeceras HTTP manualmente para enrutar</span>
+    lines = request.split(<span class="string">'\n'</span>)
+    first_line = lines[<span class="builtin">0</span>]
+    path = first_line.split(<span class="string">' '</span>)[<span class="builtin">1</span>] <span class="comment"># Ej. '/contacto'</span>
+    
+    <span class="keyword">if</span> path == <span class="string">'/'</span>:
+        html = <span class="string">"&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hola Mundo&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;"</span>
+        response = <span class="string">"HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n"</span> + html
+    <span class="keyword">else</span>:
+        response = <span class="string">"HTTP/1.1 404 NOT FOUND\r\n\r\nPage Not Found"</span>
+        
+    conn.sendall(response.encode(<span class="string">'utf-8'</span>))
+    conn.close()</code></pre>
+            </div>
+            
+            <div class="tab-pane" id="pane-django">
+                <p style="font-size: 0.9rem; margin-bottom: 1rem;">Con Django, el servidor socket y el parseo HTTP ya vienen resueltos por el framework. Solo defines la lógica de tu página en una <strong>Vista</strong> y la asocias a una ruta en <strong>URLs</strong>:</p>
+                <pre><code><span class="comment"># 1. En views.py (La lógica o controlador)</span>
+<span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponse
+
+<span class="keyword">def</span> <span class="def">home</span>(request):
+    <span class="keyword">return</span> HttpResponse(<span class="string">"&lt;h1&gt;Hola Mundo&lt;/h1&gt;"</span>)
+
+<span class="comment"># 2. En urls.py (El enrutador)</span>
+<span class="keyword">from</span> django.urls <span class="keyword">import</span> path
+<span class="keyword">from</span> . <span class="keyword">import</span> views
+
+urlpatterns = [
+    path(<span class="string">''</span>, views.home, name=<span class="string">'home'</span>),
+]</code></pre>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Flow Simulator Card -->
+    <div class="glass-card animated-item" style="animation-delay: 0.3s; grid-column: span 2;">
+        <h2>🔄 Simulador de Ciclo Request-Response</h2>
+        <p>Mira paso a paso lo que ocurre cuando un usuario entra a tu sitio web, y cómo se diferencia Python puro de Django:</p>
+        
+        <div style="background: rgba(0,0,0,0.3); border-radius: 12px; padding: 1.5rem; margin-top: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 2rem;">💻</div>
+                    <strong style="font-size: 0.9rem;">1. Cliente (Navegador)</strong>
+                </div>
+                <div style="font-size: 1.5rem; color: var(--primary-color);" id="flow-arrow-1">➡️</div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 2rem;">🌐</div>
+                    <strong style="font-size: 0.9rem;">2. Servidor Web (Socket)</strong>
+                </div>
+                <div style="font-size: 1.5rem; color: var(--primary-color);" id="flow-arrow-2">➡️</div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 2rem;">🛣️</div>
+                    <strong style="font-size: 0.9rem;">3. Enrutador</strong>
+                </div>
+                <div style="font-size: 1.5rem; color: var(--primary-color);" id="flow-arrow-3">➡️</div>
+                <div style="text-align: center; flex: 1;">
+                    <div style="font-size: 2rem;">⚙️</div>
+                    <strong style="font-size: 0.9rem;">4. Vista (Lógica)</strong>
+                </div>
+            </div>
+            
+            <div id="simulation-status" style="border: 1px solid var(--border-color); background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; margin-bottom: 1rem; font-family: 'Fira Code', monospace; font-size: 0.9rem;">
+                <span>Estado: Listo para iniciar la simulación.</span>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+                <button class="btn btn-primary" onclick="startSimulation()">Iniciar Simulación</button>
+                <button class="btn" onclick="resetSimulation()">Reiniciar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchTab(tab) {
+        document.getElementById('tab-btn-python').classList.remove('active');
+        document.getElementById('tab-btn-django').classList.remove('active');
+        document.getElementById('pane-python').classList.remove('active');
+        document.getElementById('pane-django').classList.remove('active');
+        
+        if (tab === 'python') {
+            document.getElementById('tab-btn-python').classList.add('active');
+            document.getElementById('pane-python').classList.add('active');
+        } else {
+            document.getElementById('tab-btn-django').classList.add('active');
+            document.getElementById('pane-django').classList.add('active');
+        }
+    }
+
+    let simStep = 0;
+    let simInterval = null;
+
+    const steps = [
+        {
+            title: "Paso 1: El Cliente envía la solicitud (HTTP Request)",
+            python: "El cliente inicia un handshake TCP. Envía cabeceras de texto crudo como 'GET /contacto HTTP/1.1\\r\\nHost: localhost...'",
+            django: "Django corre sobre un servidor WSGI/ASGI (como Gunicorn o Runserver) que recibe el flujo de datos TCP del socket por ti.",
+            highlight: "arrow1"
+        },
+        {
+            title: "Paso 2: Recepción y Parseo HTTP",
+            python: "Debes codificar un búfer de lectura, decodificar los bytes UTF-8, y parsear líneas usando split() para extraer método, URL y cabeceras.",
+            django: "Django transforma automáticamente el texto del socket en un objeto estructurado Python llamado `HttpRequest` accesible en la vista.",
+            highlight: "arrow2"
+        },
+        {
+            title: "Paso 3: Enrutamiento de la URL",
+            python: "Escribes un árbol gigante de condicionales `if/elif` evaluando `path == '/contacto'`. Si agregas una URL nueva, modificas el núcleo del socket.",
+            django: "El enrutador (`urls.py`) compara la URL contra patrones regex/path definidos de forma limpia y redirige a la función de vista correspondiente.",
+            highlight: "arrow3"
+        },
+        {
+            title: "Paso 4: Ejecución de la lógica e HTML",
+            python: "Generas código HTML concatenando strings o leyendo archivos manuales. Creas la respuesta HTTP agregando cabeceras de estado y tamaño.",
+            django: "La vista retorna un objeto `HttpResponse` (o renderiza plantillas). Django inyecta cookies, CSRF, gestiona sesiones y compila cabeceras por ti.",
+            highlight: "complete"
+        }
+    ];
+
+    function startSimulation() {
+        resetSimulation();
+        nextStep();
+        simInterval = setInterval(nextStep, 5000);
+    }
+
+    function resetSimulation() {
+        clearInterval(simInterval);
+        simStep = 0;
+        document.getElementById('flow-arrow-1').style.color = 'var(--primary-color)';
+        document.getElementById('flow-arrow-2').style.color = 'var(--primary-color)';
+        document.getElementById('flow-arrow-3').style.color = 'var(--primary-color)';
+        document.getElementById('simulation-status').innerHTML = '<span>Estado: Listo para iniciar la simulación.</span>';
+    }
+
+    function nextStep() {
+        if (simStep >= steps.length) {
+            clearInterval(simInterval);
+            document.getElementById('simulation-status').innerHTML = `
+                <h4 style="color: var(--success); margin-bottom: 0.5rem;">🎉 Simulación Completada</h4>
+                <p>En resumen: Mientras que en Python puro gastas el 80% de tu tiempo configurando sockets y parseando cabeceras, en Django te enfocas inmediatamente en la lógica de negocio.</p>
+            `;
+            return;
+        }
+
+        const step = steps[simStep];
+        
+        // Reset colors
+        document.getElementById('flow-arrow-1').style.color = 'var(--text-muted)';
+        document.getElementById('flow-arrow-2').style.color = 'var(--text-muted)';
+        document.getElementById('flow-arrow-3').style.color = 'var(--text-muted)';
+
+        if (step.highlight === 'arrow1') {
+            document.getElementById('flow-arrow-1').style.color = 'var(--success)';
+        } else if (step.highlight === 'arrow2') {
+            document.getElementById('flow-arrow-2').style.color = 'var(--success)';
+        } else if (step.highlight === 'arrow3') {
+            document.getElementById('flow-arrow-3').style.color = 'var(--success)';
+        } else {
+            document.getElementById('flow-arrow-1').style.color = 'var(--success)';
+            document.getElementById('flow-arrow-2').style.color = 'var(--success)';
+            document.getElementById('flow-arrow-3').style.color = 'var(--success)';
+        }
+
+        document.getElementById('simulation-status').innerHTML = `
+            <h4 style="color: var(--primary-color); margin-bottom: 0.5rem;">${step.title}</h4>
+            <div class="grid-2" style="margin-top: 0.5rem; gap: 1rem;">
+                <div style="background: rgba(239, 68, 68, 0.05); padding: 0.75rem; border-radius: 6px; border-left: 3px solid var(--danger);">
+                    <strong>🐍 Python Puro:</strong>
+                    <p style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-secondary);">${step.python}</p>
+                </div>
+                <div style="background: rgba(16, 185, 129, 0.05); padding: 0.75rem; border-radius: 6px; border-left: 3px solid var(--success);">
+                    <strong> Django Integrado:</strong>
+                    <p style="font-size: 0.85rem; margin-top: 0.25rem; color: var(--text-secondary);">${step.django}</p>
+                </div>
+            </div>
+        `;
+
+        simStep++;
+    }
+</script>
+{% endblock %}

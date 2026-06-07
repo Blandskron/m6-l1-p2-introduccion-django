@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} — Curso Django M6-L1</title>
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Dashboard educativo e interactivo sobre la introducción a Django, entornos virtuales, arquitectura MVC/MTV y enrutamiento en Python.">
+    <!-- Main Custom Stylesheet -->
+    <link rel="stylesheet" href="{% static 'leccion1/css/styles.css' %}">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <span class="logo-icon">DJ</span>
+                <span class="logo-text">Django <span class="logo-badge">M6L1</span></span>
+            </div>
+            
+            <nav>
+                <ul class="menu-list">
+                    <li class="menu-item {% if active_page == 'dashboard' %}active{% endif %}">
+                        <a href="{% url 'leccion1:dashboard' %}">
+                            <span class="menu-item-icon">📊</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li class="menu-item {% if active_page == 'virtual_envs' %}active{% endif %}">
+                        <a href="{% url 'leccion1:virtual_envs' %}">
+                            <span class="menu-item-icon">📦</span>
+                            <span>Entornos Virtuales</span>
+                        </a>
+                    </li>
+                    <li class="menu-item {% if active_page == 'python_vs_django' %}active{% endif %}">
+                        <a href="{% url 'leccion1:python_vs_django' %}">
+                            <span class="menu-item-icon">⚖️</span>
+                            <span>Python v/s Django</span>
+                        </a>
+                    </li>
+                    <li class="menu-item {% if active_page == 'router_db' %}active{% endif %}">
+                        <a href="{% url 'leccion1:router_db' %}">
+                            <span class="menu-item-icon">🛣️</span>
+                            <span>Router & DB</span>
+                        </a>
+                    </li>
+                    <li class="menu-item {% if active_page == 'mvc_dry' %}active{% endif %}">
+                        <a href="{% url 'leccion1:mvc_dry' %}">
+                            <span class="menu-item-icon">🧱</span>
+                            <span>MVC, DRY & Templates</span>
+                        </a>
+                    </li>
+                    <li class="menu-item {% if active_page == 'dev_vs_prod' %}active{% endif %}">
+                        <a href="{% url 'leccion1:dev_vs_prod' %}">
+                            <span class="menu-item-icon">⚙️</span>
+                            <span>Dev v/s Producción</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <p>Curso de Django — Lección 1</p>
+                <p style="margin-top: 0.25rem; font-size: 0.75rem;">Módulo 6: Desarrollo Web</p>
+            </div>
+        </aside>
+        
+        <!-- Main Content Wrapper -->
+        <main class="main-content">
+            <!-- Top Navigation / Status Header -->
+            <header class="top-nav">
+                <div class="page-title">
+                    <h1>{{ title }}</h1>
+                </div>
+                <div class="status-indicator" id="server-status">
+                    <span class="status-dot"></span>
+                    <span>Servidor Django: Activo</span>
+                </div>
+            </header>
+            
+            <!-- Page Contents -->
+            <section class="content-section">
+                {% block content %}
+                <!-- Child templates will override this block -->
+                {% endblock %}
+            </section>
+        </main>
+    </div>
+    
+    <!-- Micro-animations & Navigation Utilities -->
+    <script>
+        // Check local storage for dark mode or specific preferences
+        console.log("Django Lección 1 Dashboard initialized.");
+    </script>
+</body>
+</html>

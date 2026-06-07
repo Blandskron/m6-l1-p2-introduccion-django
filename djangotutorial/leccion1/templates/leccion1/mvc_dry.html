@@ -1,0 +1,146 @@
+{% extends 'leccion1/base.html' %}
+
+{% block content %}
+<div class="glass-card animated-item" style="animation-delay: 0.1s;">
+    <h2>🧱 MVC v/s MTV en Django, DRY y Plantillas</h2>
+    <p>
+        Django utiliza un patrón arquitectónico llamado **MTV (Model-Template-View)**, el cual es una variación directa del clásico patrón **MVC (Model-View-Controller)**. Este esquema separa las responsabilidades de la aplicación y trabaja de la mano con el principio **DRY (Don't Repeat Yourself)** para garantizar que no escribas código redundante.
+    </p>
+    
+    <div class="grid-3" style="margin-top: 1.5rem;">
+        <div style="background: rgba(99, 102, 241, 0.04); border: 1px solid rgba(99, 102, 241, 0.15); padding: 1rem; border-radius: 10px;">
+            <h4 style="color: var(--primary-color); margin-bottom: 0.4rem;">Model (Modelo)</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-secondary);">Define la estructura de los datos y las reglas de negocio. Se conecta a la Base de Datos mediante el ORM.</p>
+        </div>
+        <div style="background: rgba(168, 85, 247, 0.04); border: 1px solid rgba(168, 85, 247, 0.15); padding: 1rem; border-radius: 10px;">
+            <h4 style="color: var(--secondary-color); margin-bottom: 0.4rem;">Template (Plantilla)</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-secondary);">La capa de presentación (HTML con sintaxis Django). Es el equivalente a la <strong>Vista (View)</strong> en el MVC clásico.</p>
+        </div>
+        <div style="background: rgba(6, 182, 212, 0.04); border: 1px solid rgba(6, 182, 212, 0.15); padding: 1rem; border-radius: 10px;">
+            <h4 style="color: var(--accent-color); margin-bottom: 0.4rem;">View (Vista)</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-secondary);">La lógica del servidor que recupera datos y llama al template. Equivale al <strong>Controlador (Controller)</strong> en MVC.</p>
+        </div>
+    </div>
+</div>
+
+<div class="glass-card animated-item" style="animation-delay: 0.2s;">
+    <h2>💡 Herencia de Componentes y Principio DRY</h2>
+    <p>
+        El principio <strong>DRY (Don't Repeat Yourself)</strong> promueve que cada pieza de conocimiento o lógica en un sistema sea única y libre de duplicación. En la interfaz de usuario, esto se logra mediante la **Herencia de Plantillas (Templates)** de Django:
+    </p>
+    <div class="grid-2" style="margin-top: 1rem; gap: 1.5rem;">
+        <div>
+            <h4 style="margin-bottom: 0.5rem; color: var(--primary-color);">1. Plantilla Base (`base.html`):</h4>
+            <p style="font-size: 0.9rem;">Define la estructura HTML común, enlaces de estilos, sidebar y header. Contiene bloques marcados con <code>{% block content %}{% endblock %}</code> que actúan como "huecos" a rellenar por páginas hijas.</p>
+        </div>
+        <div>
+            <h4 style="margin-bottom: 0.5rem; color: var(--secondary-color);">2. Plantillas Hijas (Heredadas):</h4>
+            <p style="font-size: 0.9rem;">Declaran <code>{% extends 'base.html' %}</code> en su primera línea y reemplazan el contenido de los bloques individuales. De esta forma, si cambias el sidebar, se actualiza automáticamente en todo tu sitio web.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Template Playground Card -->
+<div class="glass-card animated-item" style="animation-delay: 0.3s;">
+    <h2>🎮 Playground de Renderización en Django</h2>
+    <p>Modifica los datos del contexto y escribe sintaxis de plantilla real de Django. Al hacer clic en <strong>Renderizar</strong>, el servidor web compilará y renderizará el resultado en tiempo real usando el motor de Django:</p>
+    
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+        <button class="btn" onclick="loadPreset('variables')">Preset 1: Variables</button>
+        <button class="btn" onclick="loadPreset('conditions')">Preset 2: Condicionales</button>
+        <button class="btn" onclick="loadPreset('loops')">Preset 3: Bucles</button>
+    </div>
+    
+    <form method="POST" action="{% url 'leccion1:mvc_dry' %}" id="playground-form">
+        {% csrf_token %}
+        <div class="playground-grid">
+            <!-- Inputs Panel -->
+            <div class="playground-sidebar">
+                <div class="grid-2" style="gap: 1rem;">
+                    <div class="form-group">
+                        <label for="nombre">Nombre (Context: nombre)</label>
+                        <input type="text" id="nombre" name="nombre" class="form-input" value="{{ nombre }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="nota">Nota (Context: nota)</label>
+                        <input type="number" step="0.1" min="1.0" max="7.0" id="nota" name="nota" class="form-input" value="{{ nota }}">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="frameworks">Lista de Herramientas (Context: frameworks — Separado por comas)</label>
+                    <input type="text" id="frameworks" name="frameworks" class="form-input" value="{{ frameworks }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="template_code">Código de la Plantilla Django (Sintaxis DTL)</label>
+                    <textarea id="template_code" name="template_code" class="form-input">{{ template_code }}</textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="align-self: flex-start; padding: 0.85rem 2rem;">⚡ Renderizar Plantilla en el Servidor</button>
+            </div>
+            
+            <!-- Output Preview Panel -->
+            <div class="preview-container">
+                <div class="preview-header">
+                    <span style="font-size: 1rem;">🖥️</span>
+                    <span>Resultado Renderizado (HTML Generado por Django)</span>
+                </div>
+                <div class="preview-body" id="preview-output">
+                    {% if rendered_output %}
+                        {{ rendered_output|safe }}
+                    {% else %}
+                        <div style="color: var(--text-muted); text-align: center; margin-top: 5rem;">
+                            <span style="font-size: 3rem;">⚡</span>
+                            <p style="margin-top: 1rem;">Presiona "Renderizar Plantilla" para ver el resultado compilado por Django aquí.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    const presets = {
+        variables: {
+            template: `<h2>Hola {{ nombre }}!</h2>
+<p>Bienvenido al módulo de Django en Python.</p>
+<p>Tu nota actual registrada en el sistema es <strong>{{ nota }}</strong>.</p>`
+        },
+        conditions: {
+            template: `<h3>Estatus Académico para {{ nombre }}</h3>
+{% if nota >= 4.0 %}
+    <div class="badge-success">🎉 Aprobado con éxito (Nota: {{ nota }})</div>
+    <p style="margin-top: 0.5rem;">Felicidades, has demostrado dominar los temas fundamentales.</p>
+{% else %}
+    <div class="badge-danger">⚠️ Pendiente / Reprobado (Nota: {{ nota }})</div>
+    <p style="margin-top: 0.5rem;">Necesitas repasar los conceptos de la lección para aprobar.</p>
+{% endif %}`
+        },
+        loops: {
+            template: `<h3>Listado de Tecnologías a Evaluar:</h3>
+<ul>
+{% for fw in frameworks %}
+    <li>🛠️ Herramienta {{ forloop.counter }}: <strong>{{ fw }}</strong></li>
+{% empty %}
+    <li>No hay frameworks definidos en la lista.</li>
+{% endfor %}
+</ul>`
+        }
+    };
+
+    function loadPreset(name) {
+        if (presets[name]) {
+            document.getElementById('template_code').value = presets[name].template;
+        }
+    }
+
+    // Scroll automatically to playground if a POST response occurred
+    {% if rendered_output %}
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('playground-form').scrollIntoView({ behavior: 'smooth' });
+    });
+    {% endif %}
+</script>
+{% endblock %}

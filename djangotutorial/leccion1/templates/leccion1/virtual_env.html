@@ -1,0 +1,216 @@
+{% extends 'leccion1/base.html' %}
+
+{% block content %}
+<div class="glass-card animated-item" style="animation-delay: 0.1s;">
+    <h2>🐍 ¿Qué es un Entorno Virtual y por qué usarlo?</h2>
+    <p>
+        Un entorno virtual es un directorio aislado del sistema que contiene su propia instalación de Python, sus propios scripts ejecutables y su propio conjunto de librerías. Evita que las dependencias instaladas en un proyecto entren en conflicto con las dependencias globales o de otros proyectos.
+    </p>
+    
+    <div class="grid-3" style="margin-top: 1.5rem;">
+        <div style="background: rgba(16, 185, 129, 0.04); border: 1px solid rgba(16, 185, 129, 0.15); padding: 1rem; border-radius: 10px;">
+            <h4 style="color: var(--success); margin-bottom: 0.4rem;">🔒 Aislamiento Completo</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-secondary);">Las librerías del proyecto no se mezclan con la instalación global de Python, manteniendo el sistema limpio.</p>
+        </div>
+        <div style="background: rgba(99, 102, 241, 0.04); border: 1px solid rgba(99, 102, 241, 0.15); padding: 1rem; border-radius: 10px;">
+            <h4 style="color: var(--primary-color); margin-bottom: 0.4rem;">🎛️ Versiones específicas</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-secondary);">Permite correr Django 5.x en un proyecto y Django 6.x en otro de manera simultánea en el mismo PC.</p>
+        </div>
+        <div style="background: rgba(168, 85, 247, 0.04); border: 1px solid rgba(168, 85, 247, 0.15); padding: 1rem; border-radius: 10px;">
+            <h4 style="color: var(--secondary-color); margin-bottom: 0.4rem;">⚡ Velocidad y Orden</h4>
+            <p style="font-size: 0.85rem; margin-bottom: 0; color: var(--text-secondary);">Facilita la creación del archivo `requirements.txt` solo con las dependencias reales del proyecto.</p>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <!-- Terminal Simulator Card -->
+    <div class="glass-card animated-item" style="animation-delay: 0.2s;">
+        <h2>🖥️ Simulador de Consola Interactiva</h2>
+        <p>Haz clic en los botones de abajo para simular la creación, activación e instalación de paquetes en tu entorno virtual:</p>
+        
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                </div>
+                <div class="terminal-title">PowerShell — Python Environment</div>
+            </div>
+            <div class="terminal-body" id="terminal-screen">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">PS C:\Proyectos\MiApp></span>
+                    <span class="terminal-cmd"># Bienvenido. Selecciona un comando de control para iniciar.</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="terminal-controls">
+            <button class="btn btn-primary" onclick="runCommand('create')">1. Crear venv</button>
+            <button class="btn btn-primary" onclick="runCommand('activate')">2. Activar venv</button>
+            <button class="btn btn-primary" onclick="runCommand('install')">3. Instalar Django</button>
+            <button class="btn btn-primary" onclick="runCommand('freeze')">4. pip freeze</button>
+            <button class="btn btn-primary" onclick="runCommand('deactivate')">5. Desactivar</button>
+            <button class="btn" style="background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #fca5a5;" onclick="clearTerminal()">Limpiar Consola</button>
+        </div>
+    </div>
+    
+    <!-- Explanation Card -->
+    <div class="glass-card animated-item" style="animation-delay: 0.3s;" id="step-explanation-card">
+        <h2>ℹ️ Explicación del Comando</h2>
+        <div id="explanation-content" style="color: var(--text-secondary); line-height: 1.6;">
+            <p>Selecciona uno de los comandos interactivos en la izquierda para ver qué ocurre en el sistema de archivos de Python y cómo influye en el desarrollo.</p>
+            <div style="margin-top: 1.5rem; text-align: center; opacity: 0.25;">
+                <span style="font-size: 4rem;">📦</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let venvCreated = false;
+    let venvActive = false;
+    let djangoInstalled = false;
+
+    const terminalScreen = document.getElementById('terminal-screen');
+    const explanationContent = document.getElementById('explanation-content');
+
+    function writeTerminal(promptText, cmdText, outputText, isSuccess = false) {
+        // Output prompt & command
+        const lineCmd = document.createElement('div');
+        lineCmd.className = 'terminal-line';
+        
+        const spanPrompt = document.createElement('span');
+        spanPrompt.className = 'terminal-prompt';
+        spanPrompt.innerText = promptText;
+        
+        const spanCmd = document.createElement('span');
+        spanCmd.className = 'terminal-cmd';
+        spanCmd.innerText = cmdText;
+        
+        lineCmd.appendChild(spanPrompt);
+        lineCmd.appendChild(spanCmd);
+        terminalScreen.appendChild(lineCmd);
+        
+        // Output result
+        if (outputText) {
+            const lineOut = document.createElement('div');
+            lineOut.className = 'terminal-out' + (isSuccess ? ' success' : '');
+            lineOut.innerText = outputText;
+            terminalScreen.appendChild(lineOut);
+        }
+        
+        // Scroll terminal to bottom
+        terminalScreen.scrollTop = terminalScreen.scrollHeight;
+    }
+
+    function clearTerminal() {
+        terminalScreen.innerHTML = '';
+        writeTerminal('PS C:\\Proyectos\\MiApp>', '# Consola limpia.', '');
+    }
+
+    function runCommand(type) {
+        const prompt = venvActive ? '(venv) PS C:\\Proyectos\\MiApp>' : 'PS C:\\Proyectos\\MiApp>';
+        
+        if (type === 'create') {
+            venvCreated = true;
+            writeTerminal(prompt, 'python -m venv venv', 'Creando directorio ./venv...\nCopiando binarios de Python...\nEntorno virtual creado con éxito.', true);
+            
+            explanationContent.innerHTML = `
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Comando: python -m venv venv</h3>
+                <p><strong>¿Qué hace?</strong> Utiliza el módulo estándar <code>venv</code> de Python para crear una carpeta física llamada "venv" en el directorio de trabajo.</p>
+                <p style="margin-top: 0.75rem;"><strong>Estructura creada:</strong></p>
+                <pre style="margin-top: 0.5rem; font-size: 0.8rem;">
+venv/
+├── Include/
+├── Lib/            # Almacena librerías locales
+│   └── site-packages/
+├── Scripts/        # Contiene activadores y ejecutables
+│   ├── activate.bat
+│   ├── activate.ps1
+│   └── python.exe  # Intérprete aislado
+└── pyvenv.cfg      # Configuración del entorno
+                </pre>
+            `;
+        } 
+        else if (type === 'activate') {
+            if (!venvCreated) {
+                writeTerminal(prompt, 'venv\\Scripts\\activate', 'Error: No se encuentra la ruta "venv\\Scripts\\activate" porque el entorno virtual no ha sido creado.', false);
+                explanationContent.innerHTML = `
+                    <h3 style="color: var(--danger); margin-bottom: 0.5rem;">⚠️ Error de Activación</h3>
+                    <p>No puedes activar el entorno virtual sin haberlo creado antes. Haz clic en el botón <strong>1. Crear venv</strong> primero.</p>
+                `;
+                return;
+            }
+            venvActive = true;
+            writeTerminal(prompt, 'venv\\Scripts\\activate', '', true);
+            writeTerminal('(venv) PS C:\\Proyectos\\MiApp>', '# El entorno virtual está activo. Note el prefijo (venv)', '');
+            
+            explanationContent.innerHTML = `
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Comando: venv\\Scripts\\activate (Windows)</h3>
+                <p><strong>¿Qué hace?</strong> Modifica las variables de entorno de tu terminal temporalmente (específicamente la variable <code>PATH</code>).</p>
+                <p style="margin-top: 0.75rem;"><strong>Implicancia:</strong> A partir de ahora, cuando ejecutes <code>python</code> o <code>pip</code> en esta consola, se llamará a los binarios locales dentro de la carpeta <code>venv</code> en lugar de los globales del sistema operativo.</p>
+                <p style="margin-top: 0.75rem; color: var(--warning);"><em>Nota: En Linux o macOS, el comando equivalente es: <code>source venv/bin/activate</code></em></p>
+            `;
+        } 
+        else if (type === 'install') {
+            if (!venvActive) {
+                writeTerminal(prompt, 'pip install django', 'ADVERTENCIA: Estás instalando Django de forma GLOBAL porque el entorno virtual no está activado.\nInstalando en C:\\Users\\Global\\AppData\\Roaming\\Python...', false);
+                explanationContent.innerHTML = `
+                    <h3 style="color: var(--warning); margin-bottom: 0.5rem;">⚠️ Instalación en el Entorno Global</h3>
+                    <p>¡Cuidado! Ejecutar <code>pip install django</code> sin activar el entorno virtual instalará Django de forma global en tu máquina.</p>
+                    <p style="margin-top: 0.5rem;"><strong>Consecuencias:</strong> Esto puede sobrescribir versiones de Django requeridas por otros proyectos de tu PC, rompiendo compatibilidades y ensuciando el sistema operativo.</p>
+                `;
+                return;
+            }
+            djangoInstalled = true;
+            writeTerminal(prompt, 'pip install django', 'Collecting django...\n  Downloading django-6.0.6-py3-none-any.whl...\nInstalling collected packages: asgiref, sqlparse, tzdata, django\nSuccessfully installed django-6.0.6 asgiref-3.11.1 sqlparse-0.5.5 tzdata-2026.2', true);
+            
+            explanationContent.innerHTML = `
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Comando: pip install django</h3>
+                <p><strong>¿Qué hace?</strong> Descarga el framework Django y sus dependencias directas desde PyPI (Python Package Index) y los almacena localmente en la carpeta del entorno virtual.</p>
+                <p style="margin-top: 0.75rem;">Las dependencias se guardan específicamente en: <br><code>venv/Lib/site-packages/</code></p>
+                <p style="margin-top: 0.75rem;">De esta manera, el proyecto tiene acceso a estas librerías, pero ningún otro programa del computador se entera de su existencia.</p>
+            `;
+        } 
+        else if (type === 'freeze') {
+            if (!venvActive) {
+                writeTerminal(prompt, 'pip freeze', 'BeautifulSoup4==4.12.2\nrequests==2.31.0\npillow==10.1.0\nnumpy==1.26.2\npandas==2.1.3\n...', false);
+                explanationContent.innerHTML = `
+                    <h3 style="color: var(--warning); margin-bottom: 0.5rem;">Comando: pip freeze (Global)</h3>
+                    <p>Al ejecutar <code>pip freeze</code> de forma global, se listan todas las librerías instaladas en tu computador a lo largo del tiempo.</p>
+                    <p style="margin-top: 0.75rem;"><strong>Problema:</strong> Si intentas usar esta lista para exportar tus dependencias, arrastrarás decenas de paquetes innecesarios para tu aplicación Django.</p>
+                `;
+            } else {
+                const output = djangoInstalled 
+                    ? 'asgiref==3.11.1\ndjango==6.0.6\nsqlparse==0.5.5\ntzdata==2026.2'
+                    : '# Ningún paquete instalado aún en este entorno virtual.';
+                writeTerminal(prompt, 'pip freeze', output, true);
+                
+                explanationContent.innerHTML = `
+                    <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Comando: pip freeze (Aislado)</h3>
+                    <p><strong>¿Qué hace?</strong> Lista exactamente los paquetes y versiones instalados dentro del entorno virtual actual.</p>
+                    <p style="margin-top: 0.75rem;"><strong>Utilidad:</strong> Permite congelar las versiones exactas para la reproducibilidad del proyecto. Puedes guardarlas directamente en un archivo de requisitos ejecutando:</p>
+                    <pre style="margin-top: 0.5rem; font-size: 0.85rem;">pip freeze > requirements.txt</pre>
+                `;
+            }
+        } 
+        else if (type === 'deactivate') {
+            if (!venvActive) {
+                writeTerminal(prompt, 'deactivate', 'Error: No hay ningún entorno virtual activo que desactivar.', false);
+                return;
+            }
+            venvActive = false;
+            writeTerminal(prompt, 'deactivate', 'Entorno virtual desactivado.', true);
+            writeTerminal('PS C:\\Proyectos\\MiApp>', '# De vuelta al entorno de Python global.', '');
+            
+            explanationContent.innerHTML = `
+                <h3 style="color: var(--primary-color); margin-bottom: 0.5rem;">Comando: deactivate</h3>
+                <p><strong>¿Qué hace?</strong> Restaura las variables de entorno originales de la terminal, saliendo del entorno virtual.</p>
+                <p style="margin-top: 0.75rem;"><strong>Resultado:</strong> Volverás a interactuar con el intérprete global de Python del sistema y dejarás de usar las dependencias del directorio <code>venv/</code>.</p>
+            `;
+        }
+    }
+</script>
+{% endblock %}

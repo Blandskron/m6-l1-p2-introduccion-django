@@ -1,0 +1,62 @@
+{% extends 'leccion1/base.html' %}
+
+{% block content %}
+<div class="glass-card animated-item" style="animation-delay: 0.1s;">
+    <h2>🚀 Bienvenido a Django</h2>
+    <p style="font-size: 1.1rem; color: var(--text-primary);">
+        Django es un framework web de alto nivel escrito en Python que fomenta un desarrollo rápido y un diseño limpio y pragmático. Creado por desarrolladores experimentados, se encarga de gran parte de las complicaciones del desarrollo web, para que puedas concentrarte en escribir tu aplicación sin tener que reinventar la rueda.
+    </p>
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+        <span class="badge-success">Python 3.x</span>
+        <span class="badge-success">Baterías Incluidas (Batteries Included)</span>
+        <span class="badge-success">Código Abierto (Open Source)</span>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="glass-card animated-item" style="animation-delay: 0.2s;">
+        <h2>🏢 Utilidad en Aplicaciones Empresariales</h2>
+        <p>
+            En el entorno corporativo, Django destaca por sus características diseñadas para satisfacer las demandas de aplicaciones robustas:
+        </p>
+        <ul style="color: var(--text-secondary); margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <li><strong>Seguridad por Defecto:</strong> Protege de forma nativa contra vulnerabilidades comunes como inyección SQL, Cross-Site Scripting (XSS), Cross-Site Request Forgery (CSRF) y secuestro de clics (Clickjacking).</li>
+            <li><strong>Escalabilidad Extrema:</strong> Utilizado por empresas líderes mundiales (Instagram, Pinterest, Disqus) gracias a su arquitectura sin estado (stateless) que permite escalar horizontalmente de forma eficiente.</li>
+            <li><strong>Mantenimiento Sencillo:</strong> Promueve el principio DRY (Don't Repeat Yourself) y la separación de responsabilidades, facilitando el trabajo colaborativo en equipos de desarrollo extensos.</li>
+        </ul>
+    </div>
+    
+    <div class="glass-card animated-item" style="animation-delay: 0.3s;">
+        <h2>💡 Ventajas y Potencialidades</h2>
+        <p>
+            ¿Por qué las organizaciones eligen Django sobre otros frameworks en el ecosistema de Python?
+        </p>
+        <ul style="color: var(--text-secondary); margin-left: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem;">
+            <li><strong>Desarrollo Veloz:</strong> Permite crear prototipos funcionales (MVP) en horas gracias a componentes pre-construidos como el panel de administración automático.</li>
+            <li><strong>ORM Robusto:</strong> Abstracción completa de base de datos que permite cambiar de motor de base de datos (ej. SQLite a PostgreSQL) modificando solo una línea en el archivo de configuración.</li>
+            <li><strong>Extensibilidad:</strong> Miles de paquetes de terceros disponibles para agregar funcionalidades listas para usar (autenticación JWT, pagos, mapas, inteligencia artificial).</li>
+        </ul>
+    </div>
+</div>
+
+<div class="glass-card animated-item" style="animation-delay: 0.4s;">
+    <h2>🔧 Flexibilidad de Instalación y Configuración</h2>
+    <p>
+        Django se adapta a múltiples entornos de trabajo. Puede configurarse e instalarse de tres maneras principales, brindando flexibilidad tanto en entornos locales de desarrollo como en producción corporativa:
+    </p>
+    <div class="grid-3" style="margin-top: 1.5rem;">
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px;">
+            <h3 style="margin-bottom: 0.5rem; color: var(--primary-color);">1. Entorno Global</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 0;">Instalado en el sistema principal del sistema operativo. Rápido, pero desaconsejado para desarrollo ya que genera colisión de dependencias entre proyectos.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px;">
+            <h3 style="margin-bottom: 0.5rem; color: var(--secondary-color);">2. Entorno Virtual (`venv`)</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 0;">El estándar recomendado. Aísla por completo las librerías del proyecto. Permite ejecutar múltiples versiones de Django y paquetes independientes por cada aplicación.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); padding: 1.25rem; border-radius: 12px;">
+            <h3 style="margin-bottom: 0.5rem; color: var(--accent-color);">3. Contenedores (Docker)</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 0;">Ideal para producción y equipos ágiles. Asegura que el entorno de desarrollo sea idéntico al de producción en la nube, eliminando el "en mi máquina sí funciona".</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

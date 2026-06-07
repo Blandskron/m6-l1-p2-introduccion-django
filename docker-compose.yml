@@ -1,0 +1,12 @@
+services:
+  web:
+    build: .
+    container_name: django_leccion1_app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./djangotutorial:/app
+      - ./docker-entrypoint.sh:/app/docker-entrypoint.sh
+    environment:
+      - DEBUG=True
+    restart: unless-stopped

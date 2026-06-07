@@ -1,0 +1,26 @@
+# Entorno Virtual local
+venv/
+.venv/
+env/
+ENV/
+
+# Control de Versiones
+.git/
+.gitignore
+
+# Cache y archivos de compilación de Python
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Bases de datos de desarrollo local
+*.sqlite3
+*.sqlite3-journal
+
+# Documentación y planes locales del asistente
+*.md
+LICENSE
+.gemini/

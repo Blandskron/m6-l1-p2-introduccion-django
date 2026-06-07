@@ -1,184 +1,122 @@
-# 🐍 M6-L1 — Introducción a Django
+# 🐍 M6-L1 — Introducción a Django y Entorno de Desarrollo
 
-## Guía paso a paso: Primera ejecución de Django
+¡Bienvenido a la plataforma educativa interactiva de **Django (Módulo 6 - Lección 1)**!
 
-Este tutorial explica **cómo crear y ejecutar un proyecto Django desde cero**, usando distintas formas válidas de inicializar el proyecto.
-Sigue los pasos **en orden**.
-
-Repositorio base:
-👉 [https://github.com/Blandskron/M6-L1-IntroduccionDjango](https://github.com/Blandskron/M6-L1-IntroduccionDjango)
+Este repositorio ha sido diseñado y transformado para servir como una guía teórico-práctica completa e interactiva. En lugar de ser un proyecto vacío, implementa una aplicación web Django con diseño premium que expone y demuestra en tiempo real todos los conceptos fundamentales del framework.
 
 ---
 
-## 1️⃣ Crear un entorno virtual (recomendado)
+## 📚 Temas de la Lección 1 Cubiertos al 100%
 
-Desde la carpeta raíz del proyecto:
+1. **Introducción a Django:** Qué es, sus características fundamentales, utilidad en proyectos empresariales y flexibilidad de instalación.
+2. **Entornos Virtuales en Python (`venv`):** Aislamiento de entornos, uso e inicio con el comando `venv`, activación/desactivación y manejo de librerías locales por proyecto.
+3. **Python Puro v/s Django Integrado:** Comparativa detallada de sockets TCP frente a la abstracción de alto nivel de Django.
+4. **Estructura Web y Bases de Datos:** El funcionamiento del ORM de Django, motores relacionales (SQLite en desarrollo vs PostgreSQL/MySQL en producción).
+5. **El Enrutador de Django:** Mapeo de rutas dinámicas y estáticas mediante `urls.py`.
+6. **Arquitectura MVC / MTV:** Modelo, Vista y Plantilla (Template), uso del principio **DRY (Don't Repeat Yourself)** y herencia de componentes HTML.
+7. **Entornos de Desarrollo v/s Producción:** Configuración crítica de seguridad de variables como `DEBUG`, `ALLOWED_HOSTS`, `SECRET_KEY` y carga de archivos estáticos.
 
+---
+
+## 🎮 Características Interactivas de la Aplicación
+
+La aplicación web cuenta con las siguientes herramientas dinámicas creadas en Javascript y Django Server-Side:
+- **Simulador de Terminal de Entornos Virtuales:** Ejecuta comandos interactivos de `venv` paso a paso y visualiza gráficamente qué ocurre en los site-packages y variables del sistema.
+- **Comparador de Código:** Visualiza de forma paralela la implementación de un socket HTTP en Python puro contra las vistas/rutas limpias de Django.
+- **Simulador de Ciclo Request-Response:** Ejecuta una animación que ilustra cómo viaja una petición desde el navegador y cómo la procesa el enrutador y la vista de Django.
+- **Visualizador del Enrutador (URL Resolver):** Introduce una URL y observa en tiempo real cómo Django busca coincidencias en `urls.py` hasta resolver qué vista llamar.
+- **Playground de Plantillas Django (DTL):** Escribe código con sintaxis de plantillas (variables `{{ nombre }}`, condicionales `{% if %}`, bucles `{% for %}`) y observa el resultado HTML renderizado directamente por el motor del servidor Django.
+
+---
+
+## 🚀 Cómo Iniciar la Aplicación (Dos Métodos)
+
+Elige el método que mejor se adapte a tu flujo de trabajo:
+
+### 🔹 Método A — Uso Local con Entorno Virtual (Recomendado para estudiantes)
+
+#### 1. Crear el entorno virtual en la raíz del proyecto
 ```bash
 python -m venv venv
 ```
 
-### Activar el entorno virtual
+#### 2. Activar el entorno virtual
+* **En Windows:**
+  ```bash
+  venv\Scripts\activate
+  ```
+* **En macOS / Linux:**
+  ```bash
+  source venv/bin/activate
+  ```
 
-**Windows**
-
+#### 3. Instalar dependencias
 ```bash
-venv\Scripts\activate
+pip install -r requirements.txt
 ```
 
-**Linux / Mac**
-
+#### 4. Ejecutar migraciones e iniciar el servidor
 ```bash
-source venv/bin/activate
-```
-
-Si todo está correcto, verás `(venv)` al inicio de la consola.
-
----
-
-## 2️⃣ Instalar Django
-
-Con el entorno virtual activo:
-
-```bash
-pip install django
-```
-
-Verifica la instalación:
-
-```bash
-django-admin --version
-```
-
----
-
-## 3️⃣ Crear el proyecto Django
-
-Existen **3 formas correctas** de crear un proyecto Django.
-⚠️ **Solo debes usar UNA**, no todas.
-
----
-
-### 🔹 Opción 1 — Crear el proyecto dentro de una carpeta nueva (recomendado para principiantes)
-
-```bash
-django-admin startproject mysite djangotutorial
-```
-
-Estructura generada:
-
-```
-djangotutorial/
-├── manage.py
-└── mysite/
-```
-
-Luego entra a la carpeta:
-
-```bash
+# Entrar a la carpeta del proyecto
 cd djangotutorial
+
+# Aplicar migraciones
+python manage.py migrate
+
+# Iniciar servidor
+python manage.py runserver
 ```
+Visita la aplicación en: 👉 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 
 ---
 
-### 🔹 Opción 2 — Crear el proyecto en una carpeta existente
+### 🔹 Método B — Despliegue Automatizado con Docker 🐳 (Recomendado para Producción/QA)
 
+El proyecto cuenta con dockerización completa para que no necesites configurar Python de forma local.
+
+#### 1. Requisitos previos
+Asegúrate de tener instalado [Docker](https://www.docker.com/) y Docker Compose en tu máquina.
+
+#### 2. Levantar el proyecto en un solo comando
+Desde la carpeta raíz del proyecto, ejecuta:
 ```bash
-django-admin startproject mysite
+docker-compose up --build
 ```
 
-Estructura:
+#### 3. Qué hace Docker automáticamente:
+- Descarga una imagen ligera de Python 3.13.
+- Instala todas las dependencias listadas en `requirements.txt`.
+- Copia y monta los volúmenes para habilitar **Live Reload** (cualquier cambio en el código se reflejará instantáneamente dentro del contenedor).
+- Ejecuta el script de entrada `docker-entrypoint.sh`, el cual aplica migraciones de base de datos, valida la integridad de Django y levanta el servidor web.
 
-```
-mysite/
-├── manage.py
-└── mysite/
-```
-
-Luego entra a la carpeta:
-
-```bash
-cd mysite
-```
+Visita la aplicación en: 👉 [http://localhost:8000/](http://localhost:8000/)
 
 ---
 
-### 🔹 Opción 3 — Crear el proyecto en la carpeta actual
-
-⚠️ Usa esta opción **solo si estás seguro** de que la carpeta está vacía.
-
-```bash
-django-admin startproject mysite .
-```
-
-Estructura:
+## 📂 Estructura de Directorios Clave
 
 ```
 .
-├── manage.py
-└── mysite/
-```
-
-👉 En esta opción **NO es necesario hacer `cd`**, ya estás en la carpeta correcta.
-
----
-
-## 4️⃣ Ejecutar el servidor por primera vez
-
-Independiente de la opción usada, debes estar en la carpeta donde está **`manage.py`**.
-
-Ejecuta:
-
-```bash
-python manage.py runserver
-```
-
-Salida esperada:
-
-```
-Starting development server at http://127.0.0.1:8000/
+├── Dockerfile                  # Receta para construir la imagen del contenedor
+├── docker-compose.yml          # Orquestación de contenedores y volúmenes
+├── docker-entrypoint.sh        # Script automatizado de inicio para el contenedor
+├── .dockerignore               # Evita copiar archivos innecesarios al contenedor
+├── requirements.txt            # Dependencias oficiales de Python/Django
+├── LICENSE                     # Licencia del proyecto (MIT)
+└── djangotutorial/             # Directorio del proyecto Django
+    ├── manage.py               # Script de control de Django
+    ├── mysite/                 # Configuración del proyecto
+    └── leccion1/               # Aplicación educativa interactiva
+        ├── static/             # Archivos CSS y diseño premium
+        └── templates/          # Vistas HTML con herencia base (DRY)
 ```
 
 ---
 
-## 5️⃣ Verificar en el navegador
+## 📄 Licencia
 
-Abre tu navegador y visita:
-
-👉 [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-
-Si ves la página de bienvenida de Django 🎉
-**¡Tu proyecto está funcionando correctamente!**
+Este proyecto está bajo la Licencia **MIT**. Consulta el archivo [LICENSE](file:///c:/Users/BlandskronNotebook/Documents/updatesGitHubs/Django/M6/M6-L1-D1-IntroduccionDjango/LICENSE) para más detalles.
 
 ---
 
-## 6️⃣ Errores comunes
-
-❌ **`'django-admin' no se reconoce`**
-➡️ El entorno virtual no está activado.
-
-❌ **`manage.py no existe`**
-➡️ Estás en la carpeta incorrecta.
-
-❌ **Puerto ocupado**
-➡️ Usa otro puerto:
-
-```bash
-python manage.py runserver 8080
-```
-
----
-
-## ✅ Conclusión
-
-En esta actividad aprendiste a:
-
-* Crear un entorno virtual
-* Instalar Django
-* Crear un proyecto Django de 3 formas distintas
-* Ejecutar el servidor de desarrollo
-* Verificar que Django funciona correctamente
-
-Este es el **primer paso obligatorio** antes de crear aplicaciones, modelos o vistas.
-
-🚀 ¡Listo para continuar con Django!
+Desarrollado como recurso educativo para el **Módulo de Desarrollo de Aplicaciones Web con Django**. ¡Éxito en tu aprendizaje! 🚀

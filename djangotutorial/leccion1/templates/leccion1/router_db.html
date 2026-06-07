@@ -1,0 +1,143 @@
+{% extends 'leccion1/base.html' %}
+
+{% block content %}
+<div class="glass-card animated-item" style="animation-delay: 0.1s;">
+    <h2>🛣️ El Enrutador y Soporte de Bases de Datos</h2>
+    <p>
+        Dos pilares fundamentales de Django son su enrutador limpio y declarativo (controlado en `urls.py`) y su sistema de abstracción de base de datos a través de un ORM (Object-Relational Mapping). Ambos componentes permiten que una aplicación Django escale, sea modular y mantenga el código libre de repeticiones (DRY).
+    </p>
+</div>
+
+<div class="grid-2">
+    <!-- Router Simulator Card -->
+    <div class="glass-card animated-item" style="animation-delay: 0.2s;">
+        <h2>🔗 Simulador de Enrutamiento de URLs</h2>
+        <p>Escribe una ruta web o presiona uno de los botones para ver cómo el enrutador de Django resuelve la URL en `urls.py`:</p>
+        
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+            <input type="text" id="route-input" class="form-input" style="flex-grow: 1;" placeholder="Ej. /entornos-virtuales/">
+            <button class="btn btn-primary" onclick="resolveRoute()">Probar Ruta</button>
+        </div>
+        
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem;">
+            <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="setRoute('/')">Inicio: /</button>
+            <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="setRoute('/admin/')">Admin: /admin/</button>
+            <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="setRoute('/entornos-virtuales/')">Virtual Envs</button>
+            <button class="btn" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="setRoute('/inexistente/')">Inexistente: /test/</button>
+        </div>
+        
+        <div class="terminal-window" style="margin-bottom: 0;">
+            <div class="terminal-header">
+                <div class="terminal-dots">
+                    <div class="terminal-dot dot-red"></div>
+                    <div class="terminal-dot dot-yellow"></div>
+                    <div class="terminal-dot dot-green"></div>
+                </div>
+                <div class="terminal-title">Django URL Resolver</div>
+            </div>
+            <div class="terminal-body" id="resolver-output" style="min-height: 180px;">
+                <div class="terminal-line">
+                    <span class="terminal-prompt">URLResolver:</span>
+                    <span class="terminal-cmd">Esperando entrada de URL...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Database Support Card -->
+    <div class="glass-card animated-item" style="animation-delay: 0.3s;">
+        <h2>🗄️ Soporte Integrado de Bases de Datos</h2>
+        <p>
+            Django provee soporte nativo y abstracción total para bases de datos relacionales a través de su **ORM**. Esto significa que escribes tus modelos en Python y Django genera las sentencias SQL correspondientes por ti.
+        </p>
+        <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; margin-top: 1rem;">
+            <h4 style="color: var(--accent-color); margin-bottom: 0.5rem;">Soporte Multimotor Nivel Corporativo:</h4>
+            <ul style="color: var(--text-secondary); font-size: 0.9rem; margin-left: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                <li><strong>SQLite:</strong> Motor de base de datos integrado en archivos. Configurado por defecto para desarrollo ágil y pruebas locales.</li>
+                <li><strong>PostgreSQL, MySQL, MariaDB, Oracle:</strong> Motores de nivel empresarial. Para conectarlos, solo debes instalar el driver Python correspondiente y actualizar el diccionario <code>DATABASES</code> en <code>settings.py</code>.</li>
+            </ul>
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted);">
+            <em>El ORM de Django promueve el principio DRY ya que evita escribir consultas SQL crudas en tus vistas, permitiendo que tu base de datos sea intercambiable sin romper la lógica.</em>
+        </p>
+    </div>
+</div>
+
+<script>
+    function setRoute(val) {
+        document.getElementById('route-input').value = val;
+        resolveRoute();
+    }
+
+    function resolveRoute() {
+        const route = document.getElementById('route-input').value.trim();
+        const output = document.getElementById('resolver-output');
+        output.innerHTML = '';
+        
+        function addLine(cmd, text, status = '') {
+            const line = document.createElement('div');
+            line.className = 'terminal-line';
+            line.innerHTML = `<span class="terminal-prompt">${cmd}:</span> <span class="terminal-cmd">${text}</span>`;
+            output.appendChild(line);
+            if (status) {
+                const sub = document.createElement('div');
+                sub.className = 'terminal-out ' + status;
+                sub.innerText = '  -> ' + (status === 'success' ? '✓ Coincidencia encontrada!' : '✗ No coincide');
+                output.appendChild(sub);
+            }
+        }
+        
+        addLine('URLResolver', 'Recibiendo petición para ruta: "' + route + '"');
+        
+        // Simular iteración sobre urlpatterns de mysite/urls.py
+        setTimeout(() => {
+            addLine('Resolver', 'Buscando en ROOT_URLCONF ("mysite.urls")...');
+            
+            setTimeout(() => {
+                if (route.startsWith('/admin') || route.startsWith('admin')) {
+                    addLine('Check', 'path("admin/", admin.site.urls)', 'success');
+                    setTimeout(() => {
+                        addLine('Result', 'Redirigiendo a la interfaz de administración interna de Django (contrib.admin).', 'info');
+                    }, 800);
+                } else {
+                    addLine('Check', 'path("admin/", admin.site.urls)', 'fail');
+                    
+                    setTimeout(() => {
+                        addLine('Resolver', 'path("", include("leccion1.urls")) -> Pasando control a leccion1.urls', 'success');
+                        
+                        setTimeout(() => {
+                            // Resolver dentro de leccion1.urls
+                            let cleanRoute = route.replace(/^\/leccion1/, '').replace(/^\//, '').replace(/\/$/, '');
+                            
+                            if (cleanRoute === '') {
+                                addLine('leccion1.urls', 'path("", views.dashboard)', 'success');
+                                setTimeout(() => addLine('View', 'Llamando a: views.dashboard(request)', 'info'), 500);
+                            } else if (cleanRoute === 'entornos-virtuales') {
+                                addLine('leccion1.urls', 'path("entornos-virtuales/", views.virtual_envs)', 'success');
+                                setTimeout(() => addLine('View', 'Llamando a: views.virtual_envs(request)', 'info'), 500);
+                            } else if (cleanRoute === 'python-vs-django') {
+                                addLine('leccion1.urls', 'path("python-vs-django/", views.python_vs_django)', 'success');
+                                setTimeout(() => addLine('View', 'Llamando a: views.python_vs_django(request)', 'info'), 500);
+                            } else if (cleanRoute === 'mvc-dry-templates') {
+                                addLine('leccion1.urls', 'path("mvc-dry-templates/", views.mvc_dry)', 'success');
+                                setTimeout(() => addLine('View', 'Llamando a: views.mvc_dry(request)', 'info'), 500);
+                            } else if (cleanRoute === 'router-database') {
+                                addLine('leccion1.urls', 'path("router-database/", views.router_db)', 'success');
+                                setTimeout(() => addLine('View', 'Llamando a: views.router_db(request)', 'info'), 500);
+                            } else if (cleanRoute === 'dev-vs-prod') {
+                                addLine('leccion1.urls', 'path("dev-vs-prod/", views.dev_vs_prod)', 'success');
+                                setTimeout(() => addLine('View', 'Llamando a: views.dev_vs_prod(request)', 'info'), 500);
+                            } else {
+                                addLine('leccion1.urls', 'Buscando patrones...', 'fail');
+                                setTimeout(() => {
+                                    addLine('Result', 'HTTP 404: Página no encontrada. Ningún patrón coincidió.', 'error-msg');
+                                }, 500);
+                            }
+                        }, 800);
+                    }, 800);
+                }
+            }, 800);
+        }, 500);
+    }
+</script>
+{% endblock %}
